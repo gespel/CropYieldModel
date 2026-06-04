@@ -63,3 +63,16 @@ def yearly_potato_yield(filename: str, year: int) -> float:
         raise ValueError(f"No potato yield data found for year {year}")
 
     return float(year_rows["value"].iloc[0])
+
+def yearly_raps_yield(filename: str, year: int) -> float:
+    df = pd.read_csv(filename, delimiter=";")
+    raps_rows = df[df["2_variable_attribute_label"] == "Winterraps"]
+    year_rows = raps_rows[raps_rows["time"].astype(str) == str(year)]
+
+    if year_rows.empty:
+        raise ValueError(f"No rapeseed yield data found for year {year}")
+    
+    try:
+        return float(year_rows["value"].iloc[0])
+    except (ValueError, TypeError):
+        raise ValueError(f"Yield value for year {year} is not numeric: {year_rows['value'].iloc[0]}")
