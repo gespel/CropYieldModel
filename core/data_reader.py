@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import os
 from matplotlib import pyplot as plt
 import netCDF4
 
@@ -18,6 +20,10 @@ def read_precipitation(filename: str) -> np.ndarray:
         with netCDF4.Dataset(filename, 'r') as ds:
             pr = ds.variables['pr'][:]
         return pr
+
+def total_precipitation(filename: str) -> float:
+    pr = read_precipitation(filename)
+    return float(np.sum(pr))
 
 def average_precipitation_germany(filename: str) -> float:
     pr = read_precipitation(filename)
@@ -47,3 +53,13 @@ def monthly_total_germany(filename: str) -> tuple[list[str], np.ndarray]:
     unique_months, inverse = np.unique(months, return_inverse=True)
     monthly_total = np.array([daily_mean[inverse == i].sum() for i in range(len(unique_months))])
     return unique_months.tolist(), monthly_total
+
+def yearly_potato_yield(filename: str, year: int) -> float:
+    df = pd.read_csv(filename, delimiter=";")
+    potato_rows = df[df["2_variable_attribute_label"] == "Kartoffeln"]
+    year_rows = potato_rows[potato_rows["time"].astype(str) == str(year)]
+
+    if year_rows.empty:
+        raise ValueError(f"No potato yield data found for year {year}")
+
+    return float(year_rows["value"].iloc[0])
