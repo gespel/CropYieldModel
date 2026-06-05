@@ -103,4 +103,6 @@ def create_big_hyras_file() -> pd.DataFrame:
 
         df.to_csv("../.data/big_hyras_file.csv", index=False)
 
-create_big_hyras_file()
+
+if __name__ == "__main__":
+    create_big_hyras_file()
