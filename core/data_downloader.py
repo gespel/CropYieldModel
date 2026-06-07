@@ -31,6 +31,7 @@ def download_max_average_temperature_files(local_path):
     download_files(local_path, 1951, 2023, "air_temperature_maximum", "tasmax")
 
 if __name__ == "__main__":
+    print("Starting a full download of all files. This may take a while...")
     download_average_temperature_files("../.data/")
     download_precipitation_files("../.data/")
     download_min_average_temperature_files("../.data/")
