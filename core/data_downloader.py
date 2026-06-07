@@ -36,11 +36,11 @@ def download_precipitation_files(local_path):
 
 
 def download_min_average_temperature_files(local_path):
-    download_files(local_path, 1951, 2023, "air_temperature_minimum", "tasmin")
+    download_files(local_path, 1951, 2023, "air_temperature_min", "tasmin")
 
 
 def download_max_average_temperature_files(local_path):
-    download_files(local_path, 1951, 2023, "air_temperature_maximum", "tasmax")
+    download_files(local_path, 1951, 2023, "air_temperature_max", "tasmax")
 
 
 if __name__ == "__main__":
