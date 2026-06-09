@@ -34,7 +34,7 @@ def average_precipitation_germany(filename: str) -> float:
     pr = read_precipitation(filename)
     return float(np.mean(pr))
 
-def daily_average_germany(filename: str) -> np.ndarray:
+def daily_average_precipitation_germany(filename: str) -> np.ndarray:
     pr = read_precipitation(filename)
     return np.mean(pr, axis=(1, 2))
 
@@ -43,16 +43,16 @@ def read_time(filename: str) -> np.ndarray:
         time_var = ds.variables['time']
         return np.array(netCDF4.num2date(time_var[:], time_var.units))
 
-def monthly_average_germany(filename: str) -> tuple[list[str], np.ndarray]:
-    daily_mean = daily_average_germany(filename)
+def monthly_average_precipitation_germany(filename: str) -> tuple[list[str], np.ndarray]:
+    daily_mean = daily_average_precipitation_germany(filename)
     times = read_time(filename)
     months = np.array([t.strftime('%Y-%m') for t in times])
     unique_months, inverse = np.unique(months, return_inverse=True)
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
     return unique_months.tolist(), monthly_mean
 
-def monthly_total_germany(filename: str) -> tuple[list[str], np.ndarray]:
-    daily_mean = daily_average_germany(filename)
+def monthly_total_precipitation_germany(filename: str) -> tuple[list[str], np.ndarray]:
+    daily_mean = daily_average_precipitation_germany(filename)
     times = read_time(filename)
     months = np.array([t.strftime('%Y-%m') for t in times])
     unique_months, inverse = np.unique(months, return_inverse=True)
@@ -247,4 +247,4 @@ def yearly_rye_yield_per_hectare(year: int) -> float:
 
 
 if __name__ == "__main__":
-    print(yearly_raps_yield_per_hectare(2020))
+    print_metadata(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc"))
