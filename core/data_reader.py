@@ -26,9 +26,18 @@ def read_precipitation(filename: str) -> np.ndarray:
             pr = ds.variables['pr'][:]
         return pr
 
+def read_mean_temperature(filename: str) -> np.ndarray:
+        with netCDF4.Dataset(filename, 'r') as ds:
+            tas = ds.variables['tas'][:]
+        return tas
+
 def total_precipitation(filename: str) -> float:
     pr = read_precipitation(filename)
     return float(np.sum(pr))
+
+def average_temperature(filename: str) -> float:
+    tas = read_mean_temperature(filename)
+    return float(np.mean(tas))
 
 def average_precipitation_germany(filename: str) -> float:
     pr = read_precipitation(filename)
