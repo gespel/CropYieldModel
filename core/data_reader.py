@@ -49,13 +49,13 @@ def average_precipitation_germany(filename: str) -> float:
 def daily_average_precipitation_germany(filename: str) -> np.ndarray:
     return np.mean(read_precipitation(filename), axis=(1, 2))
 
-def monthly_average_precipitation_germany(filename: str) -> tuple[list[str], np.ndarray]:
+def monthly_average_precipitation_germany(filename: str) -> np.ndarray:
     daily_mean = daily_average_precipitation_germany(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
     return monthly_mean
 
-def monthly_total_precipitation_germany(filename: str) -> tuple[list[str], np.ndarray]:
+def monthly_total_precipitation_germany(filename: str) -> np.ndarray:
     daily_mean = daily_average_precipitation_germany(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_total = np.array([daily_mean[inverse == i].sum() for i in range(len(unique_months))])
