@@ -43,29 +43,29 @@ def _months_index(times: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 def total_precipitation(filename: str) -> float:
     return float(np.sum(read_precipitation(filename)))
 
-def average_precipitation_germany(filename: str) -> float:
+def average_precipitation(filename: str) -> float:
     return float(np.mean(read_precipitation(filename)))
 
-def daily_average_precipitation_germany(filename: str) -> np.ndarray:
+def daily_average_precipitation(filename: str) -> np.ndarray:
     return np.mean(read_precipitation(filename), axis=(1, 2))
 
-def monthly_average_precipitation_germany(filename: str) -> np.ndarray:
-    daily_mean = daily_average_precipitation_germany(filename)
+def monthly_average_precipitation(filename: str) -> np.ndarray:
+    daily_mean = daily_average_precipitation(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
     return monthly_mean
 
-def monthly_total_precipitation_germany(filename: str) -> np.ndarray:
-    daily_mean = daily_average_precipitation_germany(filename)
+def monthly_total_precipitation(filename: str) -> np.ndarray:
+    daily_mean = daily_average_precipitation(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_total = np.array([daily_mean[inverse == i].sum() for i in range(len(unique_months))])
     return monthly_total
 
-def get_certain_months_total_precipitation_germany(filename: str, months: list[int]) -> np.ndarray:
+def get_certain_months_total_precipitation(filename: str, months: list[int]) -> np.ndarray:
     out = []
-    full_year_monthly_totals = monthly_total_precipitation_germany(filename=filename)
+    full_year_monthly_totals = monthly_total_precipitation(filename=filename)
     for month_index in months:
-        out.append(full_year_monthly_totals[month_index-1])
+        out.append(float(full_year_monthly_totals[month_index-1]))
 
     return out
 
@@ -81,6 +81,13 @@ def average_monthly_temperature(filename: str) -> np.ndarray:
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
     return monthly_mean
 
+def get_certain_months_average_temperature(filename: str, months: list[int]) -> np.ndarray:
+    out = []
+    full_year_monthy_averages = average_monthly_temperature(filename=filename)
+    for month_index in months:
+        out.append(float(full_year_monthy_averages[month_index-1]))
+    
+    return out
 
 # --- Crop yield ---
 
@@ -153,4 +160,5 @@ if __name__ == "__main__":
     #print_metadata(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc"))
     #print("Average temperature:", average_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
     #print("Average monthly temperature:", average_monthly_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
-    print(get_certain_months_total_precipitation_germany("../.data/pr_hyras_1_1952_v6-1_de.nc", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
+    print(get_certain_months_total_precipitation("../.data/pr_hyras_1_1952_v6-1_de.nc", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
+    print(get_certain_months_average_temperature("../.data/tas_hyras_1_1952_v6-1_de.nc", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ,12]))
