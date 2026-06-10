@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 import netCDF4
 import tqdm
 import pathlib
+from concurrent.futures import ProcessPoolExecutor
 
 # data directory relative to this module
 DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '.data')
@@ -30,6 +31,16 @@ def read_mean_temperature(filename: str) -> np.ndarray:
         with netCDF4.Dataset(filename, 'r') as ds:
             tas = ds.variables['tas'][:]
         return tas
+
+def average_monthly_temperature(filename: str) -> tuple[list[str], np.ndarray]:
+    tas = read_mean_temperature(filename)
+    daily_mean = np.mean(tas, axis=(1, 2))
+    times = read_time(filename)
+    months = np.array([t.strftime('%Y-%m') for t in times])
+    unique_months, inverse = np.unique(months, return_inverse=True)
+    monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
+    return unique_months.tolist(), monthly_mean
+
 
 def total_precipitation(filename: str) -> float:
     pr = read_precipitation(filename)
@@ -257,3 +268,5 @@ def yearly_rye_yield_per_hectare(year: int) -> float:
 
 if __name__ == "__main__":
     print_metadata(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc"))
+    print("Average temperature:", average_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
+    print("Average monthly temperature:", average_monthly_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
