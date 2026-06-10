@@ -53,13 +53,21 @@ def monthly_average_precipitation_germany(filename: str) -> tuple[list[str], np.
     daily_mean = daily_average_precipitation_germany(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
-    return unique_months.tolist(), monthly_mean
+    return monthly_mean
 
 def monthly_total_precipitation_germany(filename: str) -> tuple[list[str], np.ndarray]:
     daily_mean = daily_average_precipitation_germany(filename)
     unique_months, inverse = _months_index(read_time(filename))
     monthly_total = np.array([daily_mean[inverse == i].sum() for i in range(len(unique_months))])
-    return unique_months.tolist(), monthly_total
+    return monthly_total
+
+def get_certain_months_total_precipitation_germany(filename: str, months: list[int]) -> np.ndarray:
+    out = []
+    full_year_monthly_totals = monthly_total_precipitation_germany(filename=filename)
+    for month_index in months:
+        out.append(full_year_monthly_totals[month_index-1])
+
+    return out
 
 
 # --- Temperature ---
@@ -67,11 +75,11 @@ def monthly_total_precipitation_germany(filename: str) -> tuple[list[str], np.nd
 def average_temperature(filename: str) -> float:
     return float(np.mean(read_mean_temperature(filename)))
 
-def average_monthly_temperature(filename: str) -> tuple[list[str], np.ndarray]:
+def average_monthly_temperature(filename: str) -> np.ndarray:
     daily_mean = np.mean(read_mean_temperature(filename), axis=(1, 2))
     unique_months, inverse = _months_index(read_time(filename))
     monthly_mean = np.array([daily_mean[inverse == i].mean() for i in range(len(unique_months))])
-    return unique_months.tolist(), monthly_mean
+    return monthly_mean
 
 
 # --- Crop yield ---
@@ -142,6 +150,7 @@ def yearly_rye_yield_per_hectare(year: int) -> float:
 
 
 if __name__ == "__main__":
-    print_metadata(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc"))
-    print("Average temperature:", average_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
-    print("Average monthly temperature:", average_monthly_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
+    #print_metadata(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc"))
+    #print("Average temperature:", average_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
+    #print("Average monthly temperature:", average_monthly_temperature(os.path.join(DATA_DIR, "tas_hyras_1_2023_v6-1_de.nc")))
+    print(get_certain_months_total_precipitation_germany("../.data/pr_hyras_1_1952_v6-1_de.nc", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]))
